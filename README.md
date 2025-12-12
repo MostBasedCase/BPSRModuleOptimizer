@@ -6,14 +6,15 @@ A desktop tool for Blue Protocol that:
 - OCRs module stats
 - Parses effects like ARMOR+10
 - Builds Module objects
-- Capture modules from in game
-- Scores combinations of 4 modules based on desired outcome
+- Scores all possible 4 module combinations based on desired outcome
+- Outputs users' 4 best modules
 
-# WIP
+## WIP
 
-1 Scoring all random modules combinations and testing weights
-2 record area or keep on screen and use global key listener to snap modules
-3 create UI for ease
+- 1 Scoring random modules combinations and testing weights
+- 2 record area or keep on screen and use global key listener to snap modules
+- 3 create UI for ease of use
+
 
 ## Tech
 - Java 17+
