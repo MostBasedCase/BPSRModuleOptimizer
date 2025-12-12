@@ -45,7 +45,6 @@ public class RegionSelect extends JWindow {
             }
         });
     }
-
     private Rectangle makeRectangle(Point startPoint, Point endPoint) {
         int x = Math.min(startPoint.x, endPoint.x);
         int y = Math.min(startPoint.y, endPoint.y);

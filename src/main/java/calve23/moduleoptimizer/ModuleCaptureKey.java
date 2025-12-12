@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.util.logging.*;
 
 public class ModuleCaptureKey implements NativeKeyListener {
+    private long lastCaptureMs = 0;
     public static void main(String[] args) throws Exception {
         try {
             GlobalScreen.registerNativeHook();
@@ -22,8 +23,13 @@ public class ModuleCaptureKey implements NativeKeyListener {
     }
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
+        //reduce the chance for a accidental double click
+        long now = System.currentTimeMillis();
+        if (now - lastCaptureMs < 300) return;
+        lastCaptureMs = now;
         if (e.getKeyCode() == NativeKeyEvent.VC_F8) {
             System.out.println("F8 PRESSED");
+
         } else if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
             System.out.println("ESC PRESSED, ENDING PROGRAM");
             System.exit(0);
