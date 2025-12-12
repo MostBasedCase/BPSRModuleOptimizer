@@ -4,6 +4,7 @@ module calve23.moduleoptimizer {
     requires tess4j;
     requires opencv;
     requires java.desktop;
+    requires java.logging;
     requires com.github.kwhat.jnativehook;
 
 

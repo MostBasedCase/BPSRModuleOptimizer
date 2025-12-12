@@ -21,7 +21,7 @@ public class Score {
                 rng.nextInt(1,11));
     }
     private static Module[] makeRandomMods() {
-        Random rng = new Random();
+        Random rng = new Random(1);
         Module[] mods = new Module[100];
         for (int i = 0; i < mods.length; i++) {
             int num = rng.nextInt(100);
@@ -64,10 +64,10 @@ public class Score {
 
         //ask for a priority list of link effects store in this array
         Map<LinkEffectName, Integer> priority = new HashMap<>();
-        priority.put(LinkEffectName.RESISTANCE, 5);
+        priority.put(LinkEffectName.RESISTANCE, 4);
         priority.put(LinkEffectName.ARMOR, 3);
-        priority.put(LinkEffectName.CRIT_FOCUS, 3);
-        priority.put(LinkEffectName.ATTACK_SPD, 2);
+        priority.put(LinkEffectName.CRIT_FOCUS, 2);
+        priority.put(LinkEffectName.ATTACK_SPD, 1);
 
 
         EnumMap<LinkEffectName, Integer> totalEffects = new EnumMap<>(LinkEffectName.class);
