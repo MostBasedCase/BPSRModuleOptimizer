@@ -16,7 +16,7 @@ public class Score {
         }
         return score;
     }
-    private static LinkEffect randomEffectAndValue(Random rng) {
+    private static LinkEffect randomEffect(Random rng) {
         return new LinkEffect(LinkEffectName.values()[rng.nextInt(LinkEffectName.values().length)],
                 rng.nextInt(1,11));
     }
@@ -25,17 +25,17 @@ public class Score {
         Module[] mods = new Module[100];
         for (int i = 0; i < mods.length; i++) {
             int num = rng.nextInt(100);
-            Module temp = new Module(new LinkEffect(randomEffectAndValue(rng)));
-            if (num % 10 == 0) {//lvl 3 mod
-
+            Module temp = new Module(randomEffect(rng));
+            if (num % 8 == 0) {//lvl 3 mod (3 effects)
+                temp.addEffect(randomEffect(rng));
+                temp.addEffect(randomEffect(rng));
             }
-            else if (num % 7 == 0) {//lvl 1 mod
-
+            else if (num % 2 == 0) { //lvl 2 mod (2 effects)
+                temp.addEffect(randomEffect(rng));
             }
-            else if (num % 4 == 0) {// lvl 2 mod
-
-            }
+            mods[i] = temp;
         }
+        return mods;
     }
 
 
@@ -66,8 +66,8 @@ public class Score {
         Map<LinkEffectName, Integer> priority = new HashMap<>();
         priority.put(LinkEffectName.RESISTANCE, 5);
         priority.put(LinkEffectName.ARMOR, 3);
-        priority.put(LinkEffectName.CRIT_FOCUS, 2);
-        priority.put(LinkEffectName.ATTACK_SPD, 1);
+        priority.put(LinkEffectName.CRIT_FOCUS, 3);
+        priority.put(LinkEffectName.ATTACK_SPD, 2);
 
 
         EnumMap<LinkEffectName, Integer> totalEffects = new EnumMap<>(LinkEffectName.class);
