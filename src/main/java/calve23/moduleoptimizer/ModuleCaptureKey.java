@@ -17,22 +17,38 @@ public class ModuleCaptureKey implements NativeKeyListener {
         } catch (NativeHookException e) {
             throw new RuntimeException("Failed to register native hook", e);
         }
-
         GlobalScreen.addNativeKeyListener(new ModuleCaptureKey());
         System.out.println("Listening... Press F8 anywhere or Esc to end.");
     }
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-        //reduce the chance for a accidental double click
+
+        //reduce the chance for an accidental double click (remove option to hold)
         long now = System.currentTimeMillis();
         if (now - lastCaptureMs < 300) return;
         lastCaptureMs = now;
+
+        //going to do F8 for now and allow custom later
         if (e.getKeyCode() == NativeKeyEvent.VC_F8) {
-            System.out.println("F8 PRESSED");
+            captureMod();
 
         } else if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
-            System.out.println("ESC PRESSED, ENDING PROGRAM");
-            System.exit(0);
+            exitProgram();
         }
+    }
+
+    private void captureMod() {
+        System.out.println("Capturing module...");
+    }
+
+    private void exitProgram() {
+        System.out.println("ESC PRESSED, ENDING PROGRAM");
+        //unregister hook and remove listener to make sure program doesn't hang
+        try {
+            GlobalScreen.unregisterNativeHook();
+        } catch (NativeHookException ex) {
+            ex.printStackTrace();
+        }
+        System.exit(0);
     }
 }

@@ -17,6 +17,16 @@ import java.util.regex.Pattern;
 
 public class OCRTesting {
 
+    private static final Tesseract tesseract = create();
+
+    private static Tesseract create() {
+        Tesseract t = new Tesseract();
+        t.setDatapath("tess_data");
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        return t;
+    }
+
+
     private static void displayModifiedImage(Mat image, String path) {
         //save the modified matrix to see
         Imgcodecs.imwrite(path, image);
@@ -55,11 +65,6 @@ public class OCRTesting {
         LinkEffect le = null;
         List<LinkEffect> effects = new ArrayList<>();
 
-        Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("C:/Users/Dino/Desktop/images/train");
-        tesseract.setLanguage("eng");
-
-
         String result = tesseract.doOCR(image);
 
         //we see "Strength+8" or "Attack SPD+3" this is the pattern we want to catch
@@ -79,9 +84,6 @@ public class OCRTesting {
     }
 
     public static void main(String[] args) throws TesseractException {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-
-
         try {
             //1 user picks a region
             RegionSelect selector = new RegionSelect();
@@ -94,8 +96,10 @@ public class OCRTesting {
             //**Need error checking for width and height to be > 0**
             BufferedImage capture = robot.createScreenCapture(region);
             System.out.println("Atomic reference: " + StoredRegion.REGION.get());
-            //3 save image for ocr processing
-            File outFile = new File("module_capture.png");
+
+            //3 save image for ocr processing/debugging
+            //when good to go I will stop saving images and just read
+            File outFile = new File("debug_images/module_capture.png");
             ImageIO.write(capture, "png", outFile);
 
             //4 create module
