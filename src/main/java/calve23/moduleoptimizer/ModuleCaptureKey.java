@@ -58,7 +58,7 @@ public class ModuleCaptureKey implements NativeKeyListener {
 
         //4 create module
         Module mod = OCRTesting.getLinkEffectValues(outFile);
-        if (!mod.getEffects().isEmpty()) {
+        if (mod != null) {
             System.out.println(mod.getEffects().toString());
         } else {
             System.out.println("Mod not found");

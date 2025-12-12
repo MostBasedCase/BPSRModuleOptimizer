@@ -26,26 +26,9 @@ public class OCRTesting {
         t.setLanguage("eng");
         return t;
     }
-    private static LinkEffect makeEffect(String name, int value) {
-        //replace junk text with "" and trim around the word
-        LinkEffect le = null;
-        String cleanedName = name
-                .replaceAll("^(?:[A-Za-z]\\s+)+", "") // remove repeated single-letter junk
-                .replaceAll("^[^A-Za-z]+", "")   // remove non-letter junk prefix
-                .replaceAll("[^A-Za-z ]+$", "")  // remove junk suffix
-                .trim()
-                .toUpperCase()
-                .replaceAll(" ", "_");
-        System.out.println("Before: (" + name + ") After: (" +cleanedName + ")");
-        le = new LinkEffect(LinkEffectName.valueOf(cleanedName), value);
-        return le;
-    }
 
     public static Module getLinkEffectValues(File image) throws TesseractException, IOException {
-        Module m = null;
-        LinkEffect le = null;
         List<LinkEffect> effects = new ArrayList<>();
-
         String result = tesseract.doOCR(image);
 
         //we see "Strength+8" or "Attack SPD+3" this is the pattern we want to catch
@@ -53,14 +36,34 @@ public class OCRTesting {
         //  (1 or more letters and spaces) followed by (+) then (1 or more digits)
         Pattern pattern = Pattern.compile("([A-Za-z ]+)\\+(\\d+)");
         Matcher matcher = pattern.matcher(result);
-
+        boolean fail = false;
         while (matcher.find()) {
             String name = matcher.group(1).trim();
             int value = Integer.parseInt(matcher.group(2));
-             //seems consist will make checks for potential errors
-            effects.add(makeEffect(name, value));
+            name = cleaName(name);
+            try {
+                LinkEffectName link = LinkEffectName.valueOf(name);
+                effects.add(new LinkEffect(link, value));
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error in processing: Try again or re-do box.");
+                fail = true;
+                break;
+            }
         }
-        m = new Module(effects);
-        return  m;
+        if (fail) {
+            return null;
+        } else {
+            return new Module(effects);
+        }
+    }
+
+    private static String cleaName(String name) {
+        return name
+                .replaceAll("^(?:[A-Za-z]\\s+)+", "") // remove repeated single-letter junk
+                .replaceAll("^[^A-Za-z]+", "")   // remove non-letter junk prefix
+                .replaceAll("[^A-Za-z ]+$", "")  // remove junk suffix
+                .trim()
+                .toUpperCase()
+                .replaceAll(" ", "_");
     }
 }
