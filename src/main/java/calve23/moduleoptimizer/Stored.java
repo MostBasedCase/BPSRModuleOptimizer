@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * grab the next module the region will stay the same and the user wont have to make
  * another rectangle again
 */
-public final class StoredRegion {
+public final class Stored {
 
     public static final AtomicReference<Rectangle> REGION =
             new AtomicReference<>();

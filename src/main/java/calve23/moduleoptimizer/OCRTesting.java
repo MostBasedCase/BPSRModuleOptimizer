@@ -3,6 +3,7 @@ import net.sourceforge.tess4j.*;
 import org.opencv.core.*;
 
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -22,26 +23,15 @@ public class OCRTesting {
     private static Tesseract create() {
         Tesseract t = new Tesseract();
         t.setDatapath("tess_data");
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        t.setLanguage("eng");
         return t;
     }
-
-
-    private static void displayModifiedImage(Mat image, String path) {
-        //save the modified matrix to see
-        Imgcodecs.imwrite(path, image);
-
-        //Opening the file for debugging on run
-        try {
-            Desktop.getDesktop().open(new File(path));
-        } catch (IOException e) {
-            System.out.println("Could not open the image automatically. Please open it manually.");
-        }
-    }
     private static LinkEffect makeEffect(String name, int value) {
+        //replace junk text with "" and trim around the word
         String cleanedName = name.replaceAll("^[A-Za-z]{1,2}\\s+", "").trim();
         LinkEffect le = null;
         cleanedName = cleanedName.toLowerCase();
+        //convert to match enum to make better also check for null
         if(cleanedName.contains("strength boost")) le = new LinkEffect(LinkEffectName.STRENGTH_BOOST, value);
         if(cleanedName.contains("ability boost")) le = new LinkEffect(LinkEffectName.AGILITY_BOOST, value);
         if(cleanedName.contains("intellect boost")) le = new LinkEffect(LinkEffectName.INTELLECT_BOOST, value);
@@ -58,9 +48,7 @@ public class OCRTesting {
         return le;
     }
 
-
-
-    private static Module getLinkEffectValues(File image) throws TesseractException {
+    public static Module getLinkEffectValues(File image) throws TesseractException, IOException {
         Module m = null;
         LinkEffect le = null;
         List<LinkEffect> effects = new ArrayList<>();
@@ -81,36 +69,5 @@ public class OCRTesting {
         }
         m = new Module(effects);
         return  m;
-    }
-
-    public static void main(String[] args) throws TesseractException {
-        try {
-            //1 user picks a region
-            RegionSelect selector = new RegionSelect();
-            System.out.println("Drag a box on the screen...");
-            Rectangle region = selector.makeRegion();
-
-            //2 Robot captures region
-            Robot robot = new Robot();
-
-            //**Need error checking for width and height to be > 0**
-            BufferedImage capture = robot.createScreenCapture(region);
-            System.out.println("Atomic reference: " + StoredRegion.REGION.get());
-
-            //3 save image for ocr processing/debugging
-            //when good to go I will stop saving images and just read
-            File outFile = new File("debug_images/module_capture.png");
-            ImageIO.write(capture, "png", outFile);
-
-            //4 create module
-            Module mod = getLinkEffectValues(outFile);
-            System.out.println(mod.getEffects().toString());
-
-            System.out.println("Saved screenshot to: " + outFile.getAbsolutePath());
-
-        } catch (AWTException | IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }
