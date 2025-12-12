@@ -34,6 +34,7 @@ public class RegionSelect extends JWindow {
             public void mouseReleased(MouseEvent e) {
                 endPoint = e.getPoint();
                 region = makeRectangle(startPoint, endPoint);
+                StoredRegion.REGION.set(region);//saving the region with atomic reference
                 dispose();
             }
         });
@@ -91,6 +92,7 @@ public class RegionSelect extends JWindow {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ignored) {
+                System.out.println("Interrupted");
             }
         }
         return region;

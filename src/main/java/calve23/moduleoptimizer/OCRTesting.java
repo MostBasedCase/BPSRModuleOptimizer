@@ -88,12 +88,12 @@ public class OCRTesting {
             System.out.println("Drag a box on the screen...");
             Rectangle region = selector.makeRegion();
 
-            System.out.println("Selected region: " + region);
-
             //2 Robot captures region
             Robot robot = new Robot();
-            BufferedImage capture = robot.createScreenCapture(region);
 
+            //**Need error checking for width and height to be > 0**
+            BufferedImage capture = robot.createScreenCapture(region);
+            System.out.println("Atomic reference: " + StoredRegion.REGION.get());
             //3 save image for ocr processing
             File outFile = new File("module_capture.png");
             ImageIO.write(capture, "png", outFile);
