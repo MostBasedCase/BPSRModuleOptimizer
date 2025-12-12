@@ -13,5 +13,13 @@ public enum LinkEffectName {
     CAST_FOCUS,
     ATTACK_SPD,
     CRIT_FOCUS,
+    TEAM_LUCK_AND_CRIT,
+    FINAL_PROTECTION,
+    LIFE_CONDENSE,
+    FIRST_AID,
+    LIFE_STEAL,
+    LIFE_WAVE,
+    AGILE,
+    DMG_STACK,
     LUCK_FOCUS;
 }

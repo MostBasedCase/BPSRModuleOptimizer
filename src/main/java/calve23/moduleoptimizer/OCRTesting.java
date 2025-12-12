@@ -28,23 +28,16 @@ public class OCRTesting {
     }
     private static LinkEffect makeEffect(String name, int value) {
         //replace junk text with "" and trim around the word
-        String cleanedName = name.replaceAll("^[A-Za-z]{1,2}\\s+", "").trim();
         LinkEffect le = null;
-        cleanedName = cleanedName.toLowerCase();
-        //convert to match enum to make better also check for null
-        if(cleanedName.contains("strength boost")) le = new LinkEffect(LinkEffectName.STRENGTH_BOOST, value);
-        if(cleanedName.contains("ability boost")) le = new LinkEffect(LinkEffectName.AGILITY_BOOST, value);
-        if(cleanedName.contains("intellect boost")) le = new LinkEffect(LinkEffectName.INTELLECT_BOOST, value);
-        if(cleanedName.contains("special attack")) le = new LinkEffect(LinkEffectName.SPECIAL_ATTACK, value);
-        if(cleanedName.contains("elite strike")) le = new LinkEffect(LinkEffectName.ELITE_STRIKE, value);
-        if(cleanedName.contains("healing boost")) le = new LinkEffect(LinkEffectName.HEALING_BOOST, value);
-        if(cleanedName.contains("healing enhance")) le = new LinkEffect(LinkEffectName.HEALING_ENHANCE, value);
-        if(cleanedName.contains("armor")) le = new LinkEffect(LinkEffectName.ARMOR, value);
-        if(cleanedName.contains("resistance")) le = new LinkEffect(LinkEffectName.RESISTANCE, value);
-        if(cleanedName.contains("cast focus")) le = new LinkEffect(LinkEffectName.CAST_FOCUS, value);
-        if(cleanedName.contains("attack spd")) le = new LinkEffect(LinkEffectName.ATTACK_SPD, value);
-        if(cleanedName.contains("crit focus")) le = new LinkEffect(LinkEffectName.CRIT_FOCUS, value);
-        if(cleanedName.contains("luck focus")) le = new LinkEffect(LinkEffectName.LUCK_FOCUS, value);
+        String cleanedName = name
+                .replaceAll("^(?:[A-Za-z]\\s+)+", "") // remove repeated single-letter junk
+                .replaceAll("^[^A-Za-z]+", "")   // remove non-letter junk prefix
+                .replaceAll("[^A-Za-z ]+$", "")  // remove junk suffix
+                .trim()
+                .toUpperCase()
+                .replaceAll(" ", "_");
+        System.out.println("Before: (" + name + ") After: (" +cleanedName + ")");
+        le = new LinkEffect(LinkEffectName.valueOf(cleanedName), value);
         return le;
     }
 
