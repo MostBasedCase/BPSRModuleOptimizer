@@ -60,6 +60,7 @@ public class ModuleCaptureKey implements NativeKeyListener {
         Module mod = OCRTesting.getLinkEffectValues(outFile);
         if (mod != null) {
             System.out.println(mod.getEffects().toString());
+            ModuleInventory.add(mod);
         } else {
             System.out.println("Mod not found");
         }
@@ -67,6 +68,10 @@ public class ModuleCaptureKey implements NativeKeyListener {
     }
 
     private void exitProgram() {
+        System.out.println("Modules captured before exiting...");
+        for (Module mod : ModuleInventory.getModules()) {
+            System.out.println(mod.getEffects().toString());
+        }
         System.out.println("ESC PRESSED, ENDING PROGRAM");
         //unregister hook and remove listener to make sure program doesn't hang
         try {

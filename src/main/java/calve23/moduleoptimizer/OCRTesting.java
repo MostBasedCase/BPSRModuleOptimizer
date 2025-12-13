@@ -1,13 +1,5 @@
 package calve23.moduleoptimizer;
 import net.sourceforge.tess4j.*;
-import org.opencv.core.*;
-
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -36,6 +28,7 @@ public class OCRTesting {
         //  (1 or more letters and spaces) followed by (+) then (1 or more digits)
         Pattern pattern = Pattern.compile("([A-Za-z ]+)\\+(\\d+)");
         Matcher matcher = pattern.matcher(result);
+
         boolean fail = false;
         while (matcher.find()) {
             String name = matcher.group(1).trim();
