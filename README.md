@@ -10,9 +10,9 @@ A desktop tool for Blue Protocol that:
 - Outputs users' 4 best modules
 
 ## WIP
-
-- 1 Scoring captured modules
-- 2 create UI for ease of use
+- 1 Add confirmation for captured modules
+- 2 Scoring captured modules
+- 3 create UI for ease of use
 
 
 ## Tech
