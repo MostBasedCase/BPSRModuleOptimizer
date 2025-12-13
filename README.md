@@ -11,9 +11,8 @@ A desktop tool for Blue Protocol that:
 
 ## WIP
 
-- 1 Scoring random modules combinations and testing weights
-- 2 record area or keep on screen and use global key listener to snap modules
-- 3 create UI for ease of use
+- 1 Scoring captured modules
+- 2 create UI for ease of use
 
 
 ## Tech
