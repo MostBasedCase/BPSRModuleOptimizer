@@ -15,6 +15,7 @@ import java.io.IOException;
 
 public class ModuleCaptureKey implements NativeKeyListener {
     private long lastCaptureMs = 0;
+    private Module currentModule;
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
@@ -39,6 +40,13 @@ public class ModuleCaptureKey implements NativeKeyListener {
             createRegion();
         } else if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
             exitProgram();
+        } else if (e.getKeyCode() == NativeKeyEvent.VC_Y && currentModule != null) {
+            System.out.println("Selected Module Saved");
+            ModuleInventory.add(currentModule);
+            currentModule = null;
+        } else if (e.getKeyCode() == NativeKeyEvent.VC_N && currentModule != null) {
+            System.out.println("Module unselected");
+            currentModule = null;
         }
     }
 
@@ -59,12 +67,10 @@ public class ModuleCaptureKey implements NativeKeyListener {
         //4 create module
         Module mod = OCRTesting.getLinkEffectValues(outFile);
         if (mod != null) {
+            System.out.println("Type Y/N to save selected module.");
             System.out.println(mod.getEffects().toString());
-            ModuleInventory.add(mod);
-        } else {
-            System.out.println("Mod not found");
+            currentModule = mod;
         }
-
     }
 
     private void exitProgram() {
