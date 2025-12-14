@@ -10,9 +10,8 @@ A desktop tool for Blue Protocol that:
 - Outputs users' 4 best modules
 
 ## WIP
-
-- 1 Scoring random modules combinations and testing weights
-- 2 record area or keep on screen and use global key listener to snap modules
+- 1 Add confirmation for captured modules
+- 2 Scoring captured modules
 - 3 create UI for ease of use
 
 
