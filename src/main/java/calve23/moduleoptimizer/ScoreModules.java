@@ -72,11 +72,11 @@ public class ScoreModules {
             LinkEffectName name = set.getKey();
             int value = totalEffects.get(name);
             int weight = priority.getOrDefault(name, 0);
-            if (value >= 20) score += 20*weight;
-            else if (value >= 16) score += 16*weight;
-            else if (value >= 12) score += 12*weight;
-            else if (value >= 8) score += 8*weight;
-            else if (value >= 4) score += 4*weight;
+            if (value >= 20) score += 20*weight + value;
+            else if (value >= 16) score += 16*weight + value;
+            else if (value >= 12) score += 12*weight + value;
+            else if (value >= 8) score += 8*weight + value;
+            else if (value >= 4) score += 4*weight + value;
         }
         return score;
     }
