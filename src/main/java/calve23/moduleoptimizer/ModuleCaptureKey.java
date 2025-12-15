@@ -16,6 +16,7 @@ import java.io.IOException;
 public class ModuleCaptureKey implements NativeKeyListener {
     private long lastCaptureMs = 0;
     private Module currentModule;
+    private static volatile boolean isScoring = false;
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
@@ -34,19 +35,29 @@ public class ModuleCaptureKey implements NativeKeyListener {
                     throw new RuntimeException(ex);
                 }
             } else {
-                System.out.println("No capture found");
+                System.out.println("No capture found\n");
             }
         } else if (e.getKeyCode() == NativeKeyEvent.VC_F7) {
             createRegion();
         } else if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
             exitProgram();
         } else if (e.getKeyCode() == NativeKeyEvent.VC_Y && currentModule != null) {
-            System.out.println("Selected Module Saved");
+            System.out.println("Selected Module Saved\n");
             ModuleInventory.add(currentModule);
             currentModule = null;
         } else if (e.getKeyCode() == NativeKeyEvent.VC_N && currentModule != null) {
             System.out.println("Module unselected");
             currentModule = null;
+        }  else if (e.getKeyCode() == NativeKeyEvent.VC_F9 && ModuleInventory.getModules().size() >= 4) {
+            // >= 4 is quick and easy but i need to check for less than 4 and fix scoring with it
+            isScoring = true;
+            //let it finish scoring before doing any other input
+            try {
+                System.out.println("Scoring Modules\n");
+                ScoreModules.score(ModuleInventory.getModules());
+            } finally {
+                isScoring = false;
+            }
         }
     }
 
@@ -54,7 +65,7 @@ public class ModuleCaptureKey implements NativeKeyListener {
         System.out.println("Creating region...");
         RegionSelect selector = new RegionSelect();
         selector.makeRegion();
-        System.out.println("Region created: " + Stored.REGION.get());
+        System.out.println("Region created: " + Stored.REGION.get() + "\n");
     }
 
     private void captureMod() throws IOException, TesseractException, AWTException {
@@ -66,10 +77,13 @@ public class ModuleCaptureKey implements NativeKeyListener {
 
         //4 create module
         Module mod = OCRTesting.getLinkEffectValues(outFile);
-        if (mod != null) {
-            System.out.println("Type Y/N to save selected module.");
+        assert mod != null;
+        if (!mod.getEffects().isEmpty()) {
+            System.out.println("Type Y/N to save or F8 to try again.");
             System.out.println(mod.getEffects().toString());
             currentModule = mod;
+        } else {
+            System.out.println("No mod found");
         }
     }
 

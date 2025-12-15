@@ -1,12 +1,10 @@
 package calve23.moduleoptimizer;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class ModuleInventory {
 
-    private static final List<Module> MODULES = new ArrayList<Module>();
+    private static final ArrayList<Module> MODULES = new ArrayList<>();
     private ModuleInventory() {}
 
     public static void add(Module m) {
@@ -15,8 +13,8 @@ public class ModuleInventory {
     public static void remove(Module m) {
         MODULES.remove(m);
     }
-    public static List<Module> getModules() {
-        return Collections.unmodifiableList(MODULES);
+    public static ArrayList<Module> getModules() {
+        return MODULES;
     }
     public static void clear() {
         MODULES.clear();

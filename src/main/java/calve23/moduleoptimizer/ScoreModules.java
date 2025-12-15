@@ -1,7 +1,71 @@
 package calve23.moduleoptimizer;
 import java.util.*;
 
-public class Score {
+
+public class ScoreModules {
+
+    //We score by getting every combos
+    // total value based on weight and levels met 0/4/8/12/16/20
+    // (brute force for now) n usually under ~150 and
+    //ask for a priority list of link effects store in this array
+    public static void score(ArrayList<Module> m) {
+
+        Map<LinkEffectName, Integer> priority = new HashMap<>();
+
+        //saving this for testing my frost mage
+        priority.put(LinkEffectName.SPECIAL_ATTACK, 6);
+        priority.put(LinkEffectName.ELITE_STRIKE, 5);
+        priority.put(LinkEffectName.INTELLECT_BOOST, 4);
+        priority.put(LinkEffectName.CRIT_FOCUS, 3);
+        priority.put(LinkEffectName.CAST_FOCUS, 1);
+        priority.put(LinkEffectName.LUCK_FOCUS, 1);
+
+        //saving this for testing my tank
+//        priority.put(LinkEffectName.RESISTANCE, 4);
+//        priority.put(LinkEffectName.ARMOR, 3);
+//        priority.put(LinkEffectName.CRIT_FOCUS, 2);
+//        priority.put(LinkEffectName.ATTACK_SPD, 1);
+
+
+        EnumMap<LinkEffectName, Integer> totalEffects = new EnumMap<>(LinkEffectName.class);
+        for (LinkEffectName name : LinkEffectName.values()) {
+            totalEffects.put(name, 0);
+        }
+
+        int bestScore = 0;
+        Module[] bestCombo = {m.getFirst(), m.get(1), m.get(2), m.get(3)};
+
+        for (int i = 1; i < m.size()-4; i++) {
+
+            for (int j = i + 1; j < m.size()-3; j++) {
+                for (int k = j + 1; k < m.size()-2; k++) {
+                    for (int l = k + 1; l < m.size()-1; l++) {
+                        Module[] currentCombo = {m.get(i), m.get(j), m.get(k), m.get(l)};
+                        totalEffects = combine(currentCombo);
+                        int currentScore = weightedScore(totalEffects, priority);
+                        if (bestScore < currentScore) {
+                            bestScore = currentScore;
+                            bestCombo = currentCombo;
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println("Best 4 Mods");
+        for (Module mod : bestCombo) {
+            System.out.println(mod.getEffects().toString());
+        }
+    }
+
+
+
+
+
+
+
+
+
+
     private static int weightedScore(EnumMap<LinkEffectName, Integer> totalEffects, Map<LinkEffectName, Integer> priority) {
         int score = 0;
         for (var set : priority.entrySet()) {
@@ -55,52 +119,4 @@ public class Score {
         }
         return total;
     }
-
-    //We score by getting every combos
-    // total value based on weight and levels met 0/4/8/12/16/20
-    // (brute force for now) n usually under ~150 and
-
-    public static void main(String[] args) {
-
-        //ask for a priority list of link effects store in this array
-        Map<LinkEffectName, Integer> priority = new HashMap<>();
-        priority.put(LinkEffectName.RESISTANCE, 4);
-        priority.put(LinkEffectName.ARMOR, 3);
-        priority.put(LinkEffectName.CRIT_FOCUS, 2);
-        priority.put(LinkEffectName.ATTACK_SPD, 1);
-
-
-        EnumMap<LinkEffectName, Integer> totalEffects = new EnumMap<>(LinkEffectName.class);
-        for (LinkEffectName name : LinkEffectName.values()) {
-            totalEffects.put(name, 0);
-        }
-        //this is where I put the modules, IF I HAD SOME.
-        //I made random modules to test the scoring
-        Module[] modules = makeRandomMods();
-        int bestScore = 0;
-        Module[] bestCombo = {modules[0], modules[1], modules[2], modules[3]};
-
-        for (int i = 1; i < modules.length-4; i++) {
-
-            for (int j = i + 1; j < modules.length-3; j++) {
-                for (int k = j + 1; k < modules.length-2; k++) {
-                    for (int l = k + 1; l < modules.length-1; l++) {
-                        Module[] currentCombo = {modules[i], modules[j], modules[k], modules[l]};
-                        totalEffects = combine(currentCombo);
-                        int currentScore = weightedScore(totalEffects, priority);
-                        if (bestScore < currentScore) {
-                            bestScore = currentScore;
-                            bestCombo = currentCombo;
-                        }
-                    }
-                }
-            }
-        }
-        System.out.println("Best 4 Mods");
-        for (Module m : bestCombo) {
-            System.out.println(m.getEffects().toString());
-        }
-    }
-
-
 }
