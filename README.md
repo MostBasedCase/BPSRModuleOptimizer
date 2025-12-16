@@ -15,7 +15,7 @@ A desktop tool for Blue Protocol that:
 - 3 Four Modules types means: 
   - 4 regions region selects that are consistent
   - save them and click button for which you are snapping
-- 4 Automate capture and cursor movement 
+- 4 Automate capture and cursor movement (Like left click a module and it automatically does everything)
 
 
 ## Tech
