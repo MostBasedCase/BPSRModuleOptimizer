@@ -12,7 +12,10 @@ A desktop tool for Blue Protocol that:
 ## WIP
 - 1 Save best score/modules to CSV or JSON
 - 2 create UI for ease of use
-- 3 automate capture and cursor movement 
+- 3 Four Modules types means: 
+  - 4 regions region selects that are consistent
+  - save them and click button for which you are snapping
+- 4 Automate capture and cursor movement 
 
 
 ## Tech
