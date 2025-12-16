@@ -42,7 +42,7 @@ public class ModuleCaptureKey implements NativeKeyListener {
         } else if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
             exitProgram();
         } else if (e.getKeyCode() == NativeKeyEvent.VC_Y && currentModule != null) {
-            System.out.println("Selected Module Saved\n");
+            System.out.println("Selected Module Saved... F8 to capture another Mod\n");
             ModuleInventory.add(currentModule);
             currentModule = null;
         } else if (e.getKeyCode() == NativeKeyEvent.VC_N && currentModule != null) {
@@ -67,7 +67,7 @@ public class ModuleCaptureKey implements NativeKeyListener {
         System.out.println("Creating region...");
         RegionSelect selector = new RegionSelect();
         selector.makeRegion();
-        System.out.println("Region created: " + Stored.REGION.get() + "\n");
+        System.out.println("Region created... Press F8 to capture module\n");
     }
 
     private void captureMod() throws IOException, TesseractException, AWTException {
@@ -79,7 +79,10 @@ public class ModuleCaptureKey implements NativeKeyListener {
 
         //4 create module
         Module mod = OCRTesting.getLinkEffectValues(outFile);
-        assert mod != null;
+        if (mod == null) {
+            System.out.println("No mod found");
+            return;
+        }
         if (!mod.getEffects().isEmpty()) {
             System.out.println("Type Y/N to save or F8 to try again.");
             System.out.println(mod.getEffects().toString());
