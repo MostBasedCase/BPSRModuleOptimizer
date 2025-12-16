@@ -58,6 +58,8 @@ public class ModuleCaptureKey implements NativeKeyListener {
             } finally {
                 isScoring = false;
             }
+        } else if (e.getKeyCode() == NativeKeyEvent.VC_F10) {
+            ModuleInventory.load();
         }
     }
 
@@ -88,10 +90,6 @@ public class ModuleCaptureKey implements NativeKeyListener {
     }
 
     private void exitProgram() {
-        System.out.println("Modules captured before exiting...");
-        for (Module mod : ModuleInventory.getModules()) {
-            System.out.println(mod.getEffects().toString());
-        }
         System.out.println("ESC PRESSED, ENDING PROGRAM");
         //unregister hook and remove listener to make sure program doesn't hang
         try {
@@ -110,6 +108,6 @@ public class ModuleCaptureKey implements NativeKeyListener {
             throw new RuntimeException("Failed to register native hook", e);
         }
         GlobalScreen.addNativeKeyListener(new ModuleCaptureKey());
-        System.out.println("Listening... Press F7 to create region, Press F8 anywhere or Esc to end.");
+        System.out.println("F10 to load, F7 to select region, ESC to exit");
     }
 }

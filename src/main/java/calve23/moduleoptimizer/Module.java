@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Module {
 
-    private final EnumMap<LinkEffectName, Integer> effects = new EnumMap<>(LinkEffectName.class);
+    public final EnumMap<LinkEffectName, Integer> effects = new EnumMap<>(LinkEffectName.class);
 
 
     public Module(List<LinkEffect> effects) {

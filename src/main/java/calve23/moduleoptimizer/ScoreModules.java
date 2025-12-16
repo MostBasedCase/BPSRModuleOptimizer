@@ -13,18 +13,18 @@ public class ScoreModules {
         Map<LinkEffectName, Integer> priority = new HashMap<>();
 
         //saving this for testing my frost mage
-        priority.put(LinkEffectName.SPECIAL_ATTACK, 6);
-        priority.put(LinkEffectName.ELITE_STRIKE, 5);
-        priority.put(LinkEffectName.INTELLECT_BOOST, 4);
-        priority.put(LinkEffectName.CRIT_FOCUS, 3);
-        priority.put(LinkEffectName.CAST_FOCUS, 1);
-        priority.put(LinkEffectName.LUCK_FOCUS, 1);
+//        priority.put(LinkEffectName.SPECIAL_ATTACK, 6);
+//        priority.put(LinkEffectName.ELITE_STRIKE, 5);
+//        priority.put(LinkEffectName.INTELLECT_BOOST, 4);
+//        priority.put(LinkEffectName.CRIT_FOCUS, 3);
+//        priority.put(LinkEffectName.CAST_FOCUS, 1);
+//        priority.put(LinkEffectName.LUCK_FOCUS, 1);
 
         //saving this for testing my tank
-//        priority.put(LinkEffectName.RESISTANCE, 4);
-//        priority.put(LinkEffectName.ARMOR, 3);
-//        priority.put(LinkEffectName.CRIT_FOCUS, 2);
-//        priority.put(LinkEffectName.ATTACK_SPD, 1);
+        priority.put(LinkEffectName.RESISTANCE, 4);
+        priority.put(LinkEffectName.ARMOR, 3);
+        priority.put(LinkEffectName.CRIT_FOCUS, 2);
+        priority.put(LinkEffectName.ATTACK_SPD, 1);
 
 
         EnumMap<LinkEffectName, Integer> totalEffects = new EnumMap<>(LinkEffectName.class);
@@ -68,15 +68,18 @@ public class ScoreModules {
 
     private static int weightedScore(EnumMap<LinkEffectName, Integer> totalEffects, Map<LinkEffectName, Integer> priority) {
         int score = 0;
+        //now adding the value will give a equal combos but smaller higher values more priority
+        // we reach 16 but there a same combo that reaches 17 so we pick 17 for extra attribute points
+        // small gain but a gain is a gain.
         for (var set : priority.entrySet()) {
             LinkEffectName name = set.getKey();
             int value = totalEffects.get(name);
             int weight = priority.getOrDefault(name, 0);
-            if (value >= 20) score += 20*weight + value;
-            else if (value >= 16) score += 16*weight + value;
-            else if (value >= 12) score += 12*weight + value;
-            else if (value >= 8) score += 8*weight + value;
-            else if (value >= 4) score += 4*weight + value;
+            if (value >= 20) score += 20*weight;
+            else if (value >= 16) score += 16*weight;
+            else if (value >= 12) score += 12*weight;
+            else if (value >= 8) score += 8*weight;
+            else if (value >= 4) score += 4*weight;
         }
         return score;
     }

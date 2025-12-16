@@ -6,6 +6,8 @@ module calve23.moduleoptimizer {
     requires java.desktop;
     requires java.logging;
     requires com.github.kwhat.jnativehook;
+    requires com.google.gson;
+    requires lept4j;
 
 
     opens calve23.moduleoptimizer to javafx.fxml;
