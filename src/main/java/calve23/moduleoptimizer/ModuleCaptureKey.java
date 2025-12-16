@@ -110,6 +110,6 @@ public class ModuleCaptureKey implements NativeKeyListener {
             throw new RuntimeException("Failed to register native hook", e);
         }
         GlobalScreen.addNativeKeyListener(new ModuleCaptureKey());
-        System.out.println("F10 to load, F7 to select region, ESC to exit");
+        System.out.println("F10 to load | F9 to Score | F7 to select region | F6 for skill priority | ESC to exit");
     }
 }

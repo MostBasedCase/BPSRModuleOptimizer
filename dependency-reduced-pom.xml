@@ -57,7 +57,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>your.package.Main</mainClass>
+                  <mainClass>calve23.moduleoptimizer.ModuleCaptureKey</mainClass>
                 </transformer>
               </transformers>
             </configuration>

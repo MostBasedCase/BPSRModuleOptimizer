@@ -1,31 +1,36 @@
 package calve23.moduleoptimizer;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
+import java.lang.reflect.Type;
 
 
 public class ScoreModules {
+    public static Map<LinkEffectName, Integer> PRIORITY = new HashMap<>();
+    private static final Gson GSON =
+            new GsonBuilder().setPrettyPrinting().create();
+    private static final File FILE = new File("priority_list.json");
 
     //We score by getting every combos
     // total value based on weight and levels met 0/4/8/12/16/20
     // (brute force for now) n usually under ~150 and
     //ask for a priority list of link effects store in this array
     public static void score(ArrayList<Module> m) {
-
-        Map<LinkEffectName, Integer> priority = new HashMap<>();
-
-        //saving this for testing my frost mage
-//        priority.put(LinkEffectName.SPECIAL_ATTACK, 6);
-//        priority.put(LinkEffectName.ELITE_STRIKE, 5);
-//        priority.put(LinkEffectName.INTELLECT_BOOST, 4);
-//        priority.put(LinkEffectName.CRIT_FOCUS, 3);
-//        priority.put(LinkEffectName.CAST_FOCUS, 1);
-//        priority.put(LinkEffectName.LUCK_FOCUS, 1);
-
-        //saving this for testing my tank
-        priority.put(LinkEffectName.RESISTANCE, 4);
-        priority.put(LinkEffectName.ARMOR, 3);
-        priority.put(LinkEffectName.CRIT_FOCUS, 2);
-        priority.put(LinkEffectName.ATTACK_SPD, 1);
-
+        //we will just read a file for now
+        try (FileReader fr = new FileReader(FILE)) {
+            Type type = new TypeToken<Map<LinkEffectName, Integer>>() {}.getType();
+            PRIORITY = GSON.fromJson(fr, type);
+            System.out.println("Loading priority list");
+        } catch (IOException e) {
+            System.out.println("Error loading priority list");
+            System.out.println("Score will now be calculated by highest total value");
+        }
 
         EnumMap<LinkEffectName, Integer> totalEffects = new EnumMap<>(LinkEffectName.class);
         for (LinkEffectName name : LinkEffectName.values()) {
@@ -42,7 +47,7 @@ public class ScoreModules {
                     for (int l = k + 1; l < m.size()-1; l++) {
                         Module[] currentCombo = {m.get(i), m.get(j), m.get(k), m.get(l)};
                         totalEffects = combine(currentCombo);
-                        int currentScore = weightedScore(totalEffects, priority);
+                        int currentScore = weightedScore(totalEffects);
                         if (bestScore < currentScore) {
                             bestScore = currentScore;
                             bestCombo = currentCombo;
@@ -57,24 +62,15 @@ public class ScoreModules {
         }
     }
 
-
-
-
-
-
-
-
-
-
-    private static int weightedScore(EnumMap<LinkEffectName, Integer> totalEffects, Map<LinkEffectName, Integer> priority) {
+    private static int weightedScore(EnumMap<LinkEffectName, Integer> totalEffects) {
         int score = 0;
         //now adding the value will give a equal combos but smaller higher values more priority
         // we reach 16 but there a same combo that reaches 17 so we pick 17 for extra attribute points
         // small gain but a gain is a gain.
-        for (var set : priority.entrySet()) {
+        for (var set : PRIORITY.entrySet()) {
             LinkEffectName name = set.getKey();
             int value = totalEffects.get(name);
-            int weight = priority.getOrDefault(name, 0);
+            int weight = PRIORITY.getOrDefault(name, 0);
             if (value >= 20) score += 20*weight;
             else if (value >= 16) score += 16*weight;
             else if (value >= 12) score += 12*weight;
@@ -83,29 +79,6 @@ public class ScoreModules {
         }
         return score;
     }
-    private static LinkEffect randomEffect(Random rng) {
-        return new LinkEffect(LinkEffectName.values()[rng.nextInt(LinkEffectName.values().length)],
-                rng.nextInt(1,11));
-    }
-    private static Module[] makeRandomMods() {
-        Random rng = new Random(1);
-        Module[] mods = new Module[100];
-        for (int i = 0; i < mods.length; i++) {
-            int num = rng.nextInt(100);
-            Module temp = new Module(randomEffect(rng));
-            if (num % 8 == 0) {//lvl 3 mod (3 effects)
-                temp.addEffect(randomEffect(rng));
-                temp.addEffect(randomEffect(rng));
-            }
-            else if (num % 2 == 0) { //lvl 2 mod (2 effects)
-                temp.addEffect(randomEffect(rng));
-            }
-            mods[i] = temp;
-        }
-        return mods;
-    }
-
-
 
     private static EnumMap<LinkEffectName, Integer> combine(Module[] m) {
         EnumMap<LinkEffectName, Integer> total = new EnumMap<>(LinkEffectName.class);

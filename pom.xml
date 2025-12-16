@@ -121,7 +121,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>your.package.Main</mainClass>
+                                    <mainClass>calve23.moduleoptimizer.ModuleCaptureKey</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
