@@ -11,6 +11,7 @@ target/
 
 ### Java ###
 *.class
+*.jar
 
 ### OS ###
 Thumbs.db
