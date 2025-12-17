@@ -26,18 +26,22 @@ public class RegionSelect extends JWindow {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println("Drag a box on the screen...");
-                startPoint = e.getPoint();
-                endPoint = startPoint;
-                repaint();
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    System.out.println("Drag a box on the screen...");
+                    startPoint = e.getPoint();
+                    endPoint = startPoint;
+                    repaint();
+                }
             }
             @Override
             public void mouseReleased(MouseEvent e) {
-                endPoint = e.getPoint();
-                //**Need error checking for width and height to be > 0**
-                region = makeRectangle(startPoint, endPoint);
-                Stored.REGION.set(region);//saving the region with atomic reference
-                dispose();
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    endPoint = e.getPoint();
+                    //**Need error checking for width and height to be > 0**
+                    region = makeRectangle(startPoint, endPoint);
+                    Stored.REGION.set(region);//saving the region with atomic reference
+                    dispose();
+                }
             }
         });
         addMouseMotionListener(new MouseAdapter() {
