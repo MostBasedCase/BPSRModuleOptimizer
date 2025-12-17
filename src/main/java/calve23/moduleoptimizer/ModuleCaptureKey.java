@@ -22,6 +22,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
     private Module currentModule;
     private static volatile boolean isScoring = false;
     private boolean canSave = false;
+    private boolean failRegion = true;//helps with repeat fails spamming in box
 
 
     public void nativeMousePressed(NativeMouseEvent m) {
@@ -29,7 +30,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         if (now - lastCaptureMs < 300) return;
         lastCaptureMs = now;
 
-        if (m.getButton() == NativeMouseEvent.BUTTON2 && Stored.REGION.get() != null) {
+        if (m.getButton() == NativeMouseEvent.BUTTON2 && Stored.REGION.get() != null && !failRegion) {
             if (canSave && currentModule != null) {
                 ModuleInventory.add(currentModule);
                 System.out.println("Module saved");
@@ -91,6 +92,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             Stored.REGION.set(null);
             return;
         }
+        failRegion = false;
         System.out.println("Region created");
     }
 
@@ -105,12 +107,14 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         Module mod = OCRTesting.getLinkEffectValues(outFile);
         if (mod == null || mod.getEffects().isEmpty()) {
             System.out.println("No mod found, try re-doing box");
+            failRegion = true;
             return;
         }
         System.out.println("Right-Click Save or F7 to re-do region");
         System.out.println(mod.getEffects().toString());
         currentModule = mod;
         canSave = true;
+        failRegion = false;
     }
 
     private void exitProgram() {
