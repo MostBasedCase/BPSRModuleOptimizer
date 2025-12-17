@@ -5,7 +5,11 @@ import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
+import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
+import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 import net.sourceforge.tess4j.TesseractException;
+import nu.pattern.OpenCV;
+import org.opencv.core.Core;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,14 +17,36 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class ModuleCaptureKey implements NativeKeyListener {
+public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener {
     private long lastCaptureMs = 0;
     private Module currentModule;
     private static volatile boolean isScoring = false;
+    private boolean canSave = false;
+
+
+    public void nativeMousePressed(NativeMouseEvent m) {
+        long now = System.currentTimeMillis();
+        if (now - lastCaptureMs < 300) return;
+        lastCaptureMs = now;
+
+        if (m.getButton() == NativeMouseEvent.BUTTON2 && Stored.REGION.get() != null) {
+            if (canSave && currentModule != null) {
+                ModuleInventory.add(currentModule);
+                System.out.println("Module saved");
+                currentModule = null;
+                canSave = false;
+            } else {
+                try {
+                    captureMod();
+                } catch (IOException | TesseractException | AWTException ex) {
+                    System.err.println("Error capturing region: " + ex.getMessage());
+                }
+            }
+        }
+    }
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-
         //reduce the chance for an accidental double click (remove option to hold)
         long now = System.currentTimeMillis();
         if (now - lastCaptureMs < 300) return;
@@ -28,21 +54,14 @@ public class ModuleCaptureKey implements NativeKeyListener {
 
         //going to do F8 for now and allow custom later
         if (e.getKeyCode() == NativeKeyEvent.VC_F8) {
-            if (Stored.REGION.get() != null) {
-                try {
-                    captureMod();
-                } catch (IOException | TesseractException | AWTException ex) {
-                    throw new RuntimeException(ex);
-                }
-            } else {
-                System.out.println("No capture found\n");
-            }
+
         } else if (e.getKeyCode() == NativeKeyEvent.VC_F7) {
+            currentModule = null; //new region means new module to snap
             createRegion();
-        } else if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
+        } else if (e.getKeyCode() == NativeKeyEvent.VC_BACKSPACE) {
             exitProgram();
         } else if (e.getKeyCode() == NativeKeyEvent.VC_Y && currentModule != null) {
-            System.out.println("Selected Module Saved... F8 to capture another Mod\n");
+            System.out.println("Selected Module Saved... Right-Click to capture another Mod\n");
             ModuleInventory.add(currentModule);
             currentModule = null;
         } else if (e.getKeyCode() == NativeKeyEvent.VC_N && currentModule != null) {
@@ -67,7 +86,12 @@ public class ModuleCaptureKey implements NativeKeyListener {
         System.out.println("Creating region...");
         RegionSelect selector = new RegionSelect();
         selector.makeRegion();
-        System.out.println("Region created... Press F8 to capture module\n");
+        if (Stored.REGION.get().getWidth() < 1 || Stored.REGION.get().getHeight() < 1) {
+            System.err.println("Region width or height is less than 1\n");
+            Stored.REGION.set(null);
+            return;
+        }
+        System.out.println("Region created");
     }
 
     private void captureMod() throws IOException, TesseractException, AWTException {
@@ -79,17 +103,14 @@ public class ModuleCaptureKey implements NativeKeyListener {
 
         //4 create module
         Module mod = OCRTesting.getLinkEffectValues(outFile);
-        if (mod == null) {
-            System.out.println("No mod found");
+        if (mod == null || mod.getEffects().isEmpty()) {
+            System.out.println("No mod found, try re-doing box");
             return;
         }
-        if (!mod.getEffects().isEmpty()) {
-            System.out.println("Type Y/N to save or F8 to try again.");
-            System.out.println(mod.getEffects().toString());
-            currentModule = mod;
-        } else {
-            System.out.println("No mod found");
-        }
+        System.out.println("Right-Click Save or F7 to re-do region");
+        System.out.println(mod.getEffects().toString());
+        currentModule = mod;
+        canSave = true;
     }
 
     private void exitProgram() {
@@ -104,12 +125,15 @@ public class ModuleCaptureKey implements NativeKeyListener {
     }
 
     public static void main(String[] args) {
+
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {
             throw new RuntimeException("Failed to register native hook", e);
         }
-        GlobalScreen.addNativeKeyListener(new ModuleCaptureKey());
+        ModuleCaptureKey listener = new ModuleCaptureKey();
+        GlobalScreen.addNativeKeyListener(listener);
+        GlobalScreen.addNativeMouseListener(listener);
         System.out.println("F10 to load | F9 to Score | F7 to select region | F6 for skill priority | ESC to exit");
     }
 }

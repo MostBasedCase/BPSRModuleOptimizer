@@ -88,7 +88,7 @@ public class RegionSelect extends JWindow {
      * show overlay and wait until user drags and releases
      * then we can return the region the user wants
      */
-    public Rectangle makeRegion() {
+    public void makeRegion() {
         setVisible(true);
         while (region == null) {
             try {
@@ -97,6 +97,5 @@ public class RegionSelect extends JWindow {
                 System.out.println("Interrupted");
             }
         }
-        return region;
     }
 }

@@ -1,5 +1,14 @@
 package calve23.moduleoptimizer;
 import net.sourceforge.tess4j.*;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -16,6 +25,9 @@ public class OCRTesting {
         Tesseract t = new Tesseract();
         t.setDatapath("tess_data");
         t.setLanguage("eng");
+        t.setVariable(        "tessedit_char_whitelist",
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+0123456789 ");
+        t.setVariable("preserve_interword_spaces", "1");
         return t;
     }
 
