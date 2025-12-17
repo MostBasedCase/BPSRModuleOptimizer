@@ -10,9 +10,9 @@ A desktop tool for Blue Protocol that:
 - Outputs users' 4 best modules
 
 ## ALPHA TEASE
-- You can run it on the command line for now if you want!
+- You can download it [Here](https://drive.google.com/file/d/18etNtpdSxfnQVdExS0mxkTGgGvk1jcKU)
+ run it on the command line for now if you want!
 - Missing removal and modyfing captured modules (can edit stuff in JSONs).
-[Download the file](https://drive.google.com/file/d/18etNtpdSxfnQVdExS0mxkTGgGvk1jcKU)
 
 
 ## WIP
