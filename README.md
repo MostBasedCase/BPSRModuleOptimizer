@@ -18,6 +18,9 @@ A desktop tool for Blue Protocol that:
 
 ## WIP
 - 1 Save best score/modules to CSV or JSON
+- 1.5 ask user how many mods in row (in inventory)
+- If they add in order its easy to locate and adjust list 
+- inside and outside of game
 - 2 create UI for ease of use
 - 3 Four Modules types means: 
   - 4 regions region selects that are consistent

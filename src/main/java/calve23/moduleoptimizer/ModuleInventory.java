@@ -42,6 +42,9 @@ public class ModuleInventory {
         MODULES.add(currentModule);
         save();
     }
+    public static int size() {
+        return MODULES.size();
+    }
     public static Module get(int index) {
         return MODULES.get(index);
     }
@@ -57,11 +60,14 @@ public class ModuleInventory {
         }
     }
     public static void load() {
-        MODULES.clear();
         try (FileReader fr = new FileReader(FILE)) {
             Type listType = new TypeToken<ArrayList<Module>>() {}.getType();
             MODULES = GSON.fromJson(fr, listType);
-            System.out.println("Loaded " + MODULES.size() + " module(s)");
+            if (MODULES == null) {
+                System.out.println("No modules found to load");
+            } else {
+                System.out.println("Loaded " + MODULES.size() + " module(s)");
+            }
         } catch (IOException e) {
             System.out.println("Failed to load");
         }

@@ -1,18 +1,22 @@
 package calve23.moduleoptimizer;
 
 
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 
-public class RegionSelect extends JWindow {
+public class RegionSelect extends JWindow implements NativeKeyListener {
 
     private Point startPoint;
     private Point endPoint;
     private Rectangle region;
-
+    private boolean cancel = false;
     public RegionSelect() {
         //keep window on top of others
         setAlwaysOnTop(true);
@@ -88,13 +92,22 @@ public class RegionSelect extends JWindow {
 
         }
     }
-    /**
-     * show overlay and wait until user drags and releases
-     * then we can return the region the user wants
-     */
+    @Override
+    public void nativeKeyPressed(NativeKeyEvent e) {
+
+        if (e.getKeyCode() == NativeKeyEvent.VC_F7) {
+            cancel = true;
+        }
+    }
+
+
     public void makeRegion() {
         setVisible(true);
         while (region == null) {
+            if (cancel) {
+                System.out.println("Canceled region selection");
+                break;
+            }
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ignored) {
