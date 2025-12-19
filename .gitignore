@@ -2,23 +2,44 @@
 .idea/
 *.iml
 out/
+*.ipr
+*.iws
 
 ### Maven ###
 target/
+*.class
+*.jar
+*.war
+*.ear
 
 ### Logs ###
 *.log
+logs/
+hs_err_pid*
 
-### Java ###
-*.class
-*.jar
 
 ### OS ###
-Thumbs.db
 .DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
 
-### PNGs made ###
+### images made by app ###
 *.png
+*.jpg
+*.jpeg
 
-### JSON ###
+### temp / editor files ###
+*.tmp
+*.temp
+*.swp
+*.swo
+*.bak
+*~
+
+### JSONs made by app ###
 *.json
+
+### maven shade plugin output ###
+dependency-reduced-pom.xml
