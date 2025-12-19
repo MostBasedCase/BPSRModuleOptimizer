@@ -163,7 +163,6 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
 
 
     public static void main(String[] args) {
-
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {

@@ -7,7 +7,6 @@ public class Module {
 
     public final EnumMap<LinkEffectName, Integer> effects = new EnumMap<>(LinkEffectName.class);
 
-
     public Module(List<LinkEffect> effects) {
         for (LinkEffect effect : effects) {
             this.effects.put(effect.name(), effect.value());
@@ -15,9 +14,6 @@ public class Module {
     }
     public Module(LinkEffect effect) {
         this.effects.put(effect.name(), effect.value());
-    }
-    public void addEffect(LinkEffect effect) {
-        effects.put(effect.name(), effect.value());
     }
     public String toString() {
         return getEffects().toString();

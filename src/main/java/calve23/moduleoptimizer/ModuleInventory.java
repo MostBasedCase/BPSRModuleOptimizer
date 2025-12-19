@@ -1,9 +1,7 @@
 package calve23.moduleoptimizer;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,38 +19,17 @@ public class ModuleInventory {
 
     private ModuleInventory() {}
 
-    public static void remove(Module m) {
-        MODULES.remove(m);
-        save();
-    }
-    public static ArrayList<Module> getModules() {
-        return MODULES;
-    }
-    public static void clear() {
-        MODULES.clear();
-    }
     public static Module removeLast() {
         Module m = MODULES.removeLast();
         save();
         return m;
     }
-    public static int count() {
-        return MODULES.size();
-    }
-
     public static void add(Module currentModule) {
         MODULES.add(currentModule);
         save();
     }
     public static int size() {
         return MODULES.size();
-    }
-    public static Module get(int index) {
-        return MODULES.get(index);
-    }
-    public static void remove(int index) {
-        MODULES.remove(index);
-        save();
     }
     public static void save() {
         try (FileWriter fw = new FileWriter(FILE)) {
@@ -73,6 +50,5 @@ public class ModuleInventory {
         } catch (IOException e) {
             System.out.println("Failed to load");
         }
-
     }
 }

@@ -1,21 +1,11 @@
 package calve23.moduleoptimizer;
 import net.sourceforge.tess4j.*;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 public class OCRTesting {
 
@@ -34,14 +24,9 @@ public class OCRTesting {
     public static Module getLinkEffectValues(File image) throws TesseractException, IOException {
         List<LinkEffect> effects = new ArrayList<>();
         String result = tesseract.doOCR(image);
-
-        //we see "Strength+8" or "Attack SPD+3" this is the pattern we want to catch
-        //  ([A-Za-z ]+)  (\\+)  (\\d+)
-        //  (1 or more letters and spaces) followed by (+) then (1 or more digits)
         Pattern pattern = Pattern.compile("([A-Za-z ]+)\\+(\\d+)");
         Matcher matcher = pattern.matcher(result);
 
-        boolean fail = false;
         while (matcher.find()) {
             String name = matcher.group(1).trim();
             int value = Integer.parseInt(matcher.group(2));
@@ -51,15 +36,10 @@ public class OCRTesting {
                 effects.add(new LinkEffect(link, value));
             } catch (IllegalArgumentException e) {
                 System.out.println("Error in processing: Try again or re-do box.");
-                fail = true;
-                break;
+                return null;
             }
         }
-        if (fail) {
-            return null;
-        } else {
-            return new Module(effects);
-        }
+        return new Module(effects);
     }
 
     private static String cleaName(String name) {
