@@ -31,8 +31,10 @@ public class ModuleInventory {
     public static void clear() {
         MODULES.clear();
     }
-    public static void removeLast() {
-        MODULES.removeLast();
+    public static Module removeLast() {
+        Module m = MODULES.removeLast();
+        save();
+        return m;
     }
     public static int count() {
         return MODULES.size();

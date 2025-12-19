@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener {
     private volatile State state = State.READY;
+    private volatile boolean canUndo = false;
     private long lastCaptureMs = 0;
     private Module currentModule;
 
@@ -21,13 +22,8 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
     public void nativeMousePressed(NativeMouseEvent m) {
         if (onCoolDown(lastCaptureMs)) return;
         if (m.getButton() != NativeMouseEvent.BUTTON2) return;
-
-        Action a = switch (state) {
-            case READY_TO_CAPTURE -> Action.CAPTURE;
-            case READY_TO_SAVE    -> Action.SAVE;
-            default -> null;
-        };
-        handleThread(a);
+        if (state != State.READY_TO_CAPTURE && state != State.READY_TO_SAVE)  return;
+        handleThread(Action.CAPTURE);
     }
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
@@ -38,7 +34,9 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             case NativeKeyEvent.VC_F7 -> Action.CREATE_REGION;
             case NativeKeyEvent.VC_F9 -> Action.SCORE;
             case NativeKeyEvent.VC_F10 -> Action.LOAD;
-            case NativeKeyEvent.VC_BACKSPACE -> Action.EXIT;
+            case NativeKeyEvent.VC_ESCAPE -> Action.EXIT;
+            case NativeKeyEvent.VC_SPACE -> Action.SAVE;
+            case NativeKeyEvent.VC_BACKSPACE -> Action.UNDO_SAVE;
             default -> null;
         };
         handleThread(a);
@@ -62,13 +60,21 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         case SCORE -> score();
         case EXIT -> exitProgram();
         case SET_PRIORITY -> System.out.println("Set priority coming soon");
+        case UNDO_SAVE -> undoSave();
+
         }
     }
 
+    private void undoSave() {
+                System.out.println("Removed: " + ModuleInventory.removeLast().toString());
+        canUndo = false;
+    }
+
     private void saveMod() {
-        ModuleInventory.add(currentModule);
         state = State.READY_TO_CAPTURE;
-        System.out.println("Mod Saved");
+        ModuleInventory.add(currentModule);
+        System.out.println("Mod Saved | Backspace to undo");
+        canUndo = true;
     }
 
     private boolean canNotDo(Action action) {
@@ -78,7 +84,8 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         return !switch (action) {
             case SCORE -> ModuleInventory.MODULES != null &&
                           ModuleInventory.size() >= 4;
-            case SAVE -> currentModule != null;
+            case SAVE -> currentModule != null && state == State.READY_TO_SAVE;
+            case UNDO_SAVE -> canUndo;
             default -> true;
         };
     }
@@ -111,7 +118,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
                 Stored.REGION.set(null);
                 state = State.READY;
             } else {
-                System.out.println("Region created");
+                System.out.println("Right-Click to capture | F7 to re-do region");
                 state = State.READY_TO_CAPTURE;
             }
         }
@@ -133,13 +140,13 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             return;
         }
         state = State.READY_TO_SAVE;
-        System.out.println("Right-Click Save or F7 to re-do region");
+        System.out.println("Right-Click re-capture | Space-bar to save | F7 to re-do region");
         System.out.println(mod.getEffects().toString());
         currentModule = mod;
     }
 
     private void exitProgram() {
-        System.out.println("BACKSPACE PRESSED, ENDING PROGRAM");
+        System.out.println("ESC PRESSED, ENDING PROGRAM");
         try {
             GlobalScreen.unregisterNativeHook();
         } catch (NativeHookException ex) {
@@ -165,6 +172,6 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         ModuleCaptureKey listener = new ModuleCaptureKey();
         GlobalScreen.addNativeKeyListener(listener);
         GlobalScreen.addNativeMouseListener(listener);
-        System.out.println("F10 to load | F9 to Score | F7 to select region | F6 for skill priority | BACKSPACE to exit");
+        System.out.println("F10 to load | F9 to Score | F7 to select region | F6 for skill priority | ESC to exit");
     }
 }

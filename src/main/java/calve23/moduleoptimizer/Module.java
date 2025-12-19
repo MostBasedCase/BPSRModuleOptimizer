@@ -19,6 +19,9 @@ public class Module {
     public void addEffect(LinkEffect effect) {
         effects.put(effect.name(), effect.value());
     }
+    public String toString() {
+        return getEffects().toString();
+    }
     public EnumMap<LinkEffectName, Integer> getEffects() {
         return new EnumMap<>(effects);
     }
