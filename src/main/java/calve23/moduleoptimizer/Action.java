@@ -10,5 +10,8 @@ public enum Action {
     SET_PRIORITY,
     PAUSE,
     UNDO_SAVE,
-    NOTHING
+    GOLD_2_CAPTURE,
+    GOLD_1_CAPTURE,
+    PURPLE_CAPTURE,
+    BLUE_CAPTURE,
 }

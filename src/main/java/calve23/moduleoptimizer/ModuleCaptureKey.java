@@ -39,10 +39,10 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             case NativeKeyEvent.VC_SPACE -> Action.SAVE;
             case NativeKeyEvent.VC_BACKSPACE -> Action.UNDO_SAVE;
             case NativeKeyEvent.VC_P -> Action.PAUSE;
-            case NativeKeyEvent.VC_1 ->  Action.NOTHING; //3 regions
-            case NativeKeyEvent.VC_2 ->  Action.NOTHING; //3 regions
-            case NativeKeyEvent.VC_3 ->  Action.NOTHING; //2 regions
-            case NativeKeyEvent.VC_4 ->  Action.NOTHING; // 1 region (4 region sets)
+            case NativeKeyEvent.VC_1 ->  Action.GOLD_2_CAPTURE; //3 regions
+            case NativeKeyEvent.VC_2 ->  Action.GOLD_1_CAPTURE; //3 regions
+            case NativeKeyEvent.VC_3 ->  Action.PURPLE_CAPTURE; //2 regions
+            case NativeKeyEvent.VC_4 ->  Action.BLUE_CAPTURE;   // 1 region (4 region sets)
             default -> null;
         };
         handleThread(a);
