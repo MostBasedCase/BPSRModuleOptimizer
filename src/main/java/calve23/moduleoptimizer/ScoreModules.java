@@ -70,7 +70,6 @@ public class ScoreModules {
         }
         return score;
     }
-
     private static EnumMap<LinkEffectName, Double> combine(Module[] m) {
         EnumMap<LinkEffectName, Double> total = new EnumMap<>(LinkEffectName.class);
         for (LinkEffectName name : LinkEffectName.values()) {

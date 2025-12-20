@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener {
     private volatile State state = State.READY;
+    private volatile State previousState = State.READY;
     private volatile boolean canUndo = false;
     private long lastCaptureMs = 0;
     private Module currentModule;
@@ -37,6 +38,11 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             case NativeKeyEvent.VC_ESCAPE -> Action.EXIT;
             case NativeKeyEvent.VC_SPACE -> Action.SAVE;
             case NativeKeyEvent.VC_BACKSPACE -> Action.UNDO_SAVE;
+            case NativeKeyEvent.VC_P -> Action.PAUSE;
+            case NativeKeyEvent.VC_1 ->  Action.NOTHING; //3 regions
+            case NativeKeyEvent.VC_2 ->  Action.NOTHING; //3 regions
+            case NativeKeyEvent.VC_3 ->  Action.NOTHING; //2 regions
+            case NativeKeyEvent.VC_4 ->  Action.NOTHING; // 1 region (4 region sets)
             default -> null;
         };
         handleThread(a);
@@ -61,9 +67,22 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         case EXIT -> exitProgram();
         case SET_PRIORITY -> System.out.println("Set priority coming soon");
         case UNDO_SAVE -> undoSave();
+        case PAUSE -> pause();
 
         }
     }
+
+    private void pause() {
+        if(state != State.PAUSED)  {
+            previousState = state;
+            state = State.PAUSED;
+            System.out.println("PAUSED");
+        } else {
+            state = previousState;
+            System.out.println("UNPAUSED");
+        }
+    }
+
 
     private void undoSave() {
                 System.out.println("Removed: " + ModuleInventory.removeLast().toString());
@@ -71,7 +90,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
     }
 
     private void saveMod() {
-        state = State.READY_TO_CAPTURE;
+        updateState(State.READY_TO_CAPTURE);
         ModuleInventory.add(currentModule);
         System.out.println("Mod Saved | Backspace to undo");
         canUndo = true;
@@ -79,8 +98,8 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
 
     private boolean canNotDo(Action action) {
         if (action == Action.EXIT) return false; //always allow exit
-        if (state == State.SCORING || state == State.CREATING_REGION || state == State.CAPTURING) return true; //busy
-
+        if (action == Action.PAUSE && state != State.CREATING_REGION) return false;//always allow pause except when creating region
+        if (state == State.SCORING || state == State.CREATING_REGION || state == State.CAPTURING || state == State.PAUSED) return true; //busy return false;
         return !switch (action) {
             case SCORE -> ModuleInventory.MODULES != null &&
                           ModuleInventory.size() >= 4;
@@ -94,15 +113,19 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             System.out.println("Need at least 4 modules to score.");
             return;
         }
-        state = State.SCORING;
+        updateState(State.SCORING);
         try {
             ScoreModules.score(ModuleInventory.MODULES);
         } finally {
-            state = State.READY;
+            updateState(State.READY);
         }
     }
+    private void updateState(State newState) {
+        previousState = state;
+        state = newState;
+    }
     private void createRegion() {
-        state = State.CREATING_REGION;
+        updateState(State.CREATING_REGION);
         try {
             System.out.println("Creating a region...");
             RegionSelect selector = new RegionSelect();
@@ -116,16 +139,16 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             if (!valid) {
                 System.err.println("NULL or < (1x1).\n");
                 Stored.REGION.set(null);
-                state = State.READY;
+                updateState(State.READY);
             } else {
                 System.out.println("Right-Click to capture | F7 to re-do region");
-                state = State.READY_TO_CAPTURE;
+                updateState(State.READY_TO_CAPTURE);
             }
         }
     }
 
     private void captureMod() throws TesseractException, IOException, AWTException {
-        state = State.CAPTURING;
+        updateState(State.CAPTURING);
 
         Robot robot = new Robot();
         BufferedImage capture = robot.createScreenCapture(Stored.REGION.get());
@@ -136,10 +159,10 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         Module mod = OCRTesting.getLinkEffectValues(outFile); //fails state should go back to READY
         if (mod == null || mod.getEffects().isEmpty()) {
             System.out.println("No mod found, try re-doing box");
-            state = State.READY;
+            updateState(State.READY);
             return;
         }
-        state = State.READY_TO_SAVE;
+        updateState(State.READY_TO_CAPTURE);
         System.out.println("Right-Click re-capture | Space-bar to save | F7 to re-do region");
         System.out.println(mod.getEffects().toString());
         currentModule = mod;

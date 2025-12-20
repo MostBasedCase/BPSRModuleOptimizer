@@ -8,5 +8,7 @@ public enum Action {
     SCORE,
     EXIT,
     SET_PRIORITY,
-    UNDO_SAVE
+    PAUSE,
+    UNDO_SAVE,
+    NOTHING
 }
