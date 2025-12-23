@@ -8,6 +8,8 @@ module calve23.moduleoptimizer {
     requires com.github.kwhat.jnativehook;
     requires com.google.gson;
     requires lept4j;
+    requires com.sun.jna.platform;
+    requires com.sun.jna;
 
 
     opens calve23.moduleoptimizer to javafx.fxml;

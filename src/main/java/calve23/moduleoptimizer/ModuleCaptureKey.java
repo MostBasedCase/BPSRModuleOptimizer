@@ -8,6 +8,7 @@ import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
 import net.sourceforge.tess4j.TesseractException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -235,6 +236,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
 
 
     public static void main(String[] args) {
+        ConsoleOn.top();
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {
