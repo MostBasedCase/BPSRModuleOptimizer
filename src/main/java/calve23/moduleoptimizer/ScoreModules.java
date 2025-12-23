@@ -30,7 +30,7 @@ public class ScoreModules {
         for (LinkEffectName name : LinkEffectName.values()) {
             totalEffects.put(name, 0.0);
         }
-
+        EnumMap<LinkEffectName, Double> bestTotals = null;
         double bestScore = 0;
         Module[] bestCombo = {m.getFirst(), m.get(1), m.get(2), m.get(3)};
 
@@ -39,11 +39,12 @@ public class ScoreModules {
                 for (int k = j + 1; k < m.size()-2; k++) {
                     for (int l = k + 1; l < m.size()-1; l++) {
                         Module[] currentCombo = {m.get(i), m.get(j), m.get(k), m.get(l)};
-                        totalEffects = combine(currentCombo);
+                        totalEffects = combineNew(currentCombo);
                         double currentScore = weightedScore(totalEffects);
                         if (bestScore < currentScore) {
                             bestScore = currentScore;
                             bestCombo = currentCombo;
+                            bestTotals = totalEffects;
                         }
                     }
                 }
@@ -53,7 +54,20 @@ public class ScoreModules {
         for (Module mod : bestCombo) {
             System.out.println(mod.getEffects().toString());
         }
+        if (bestTotals != null) {
+            printTotals(bestTotals);
+        } else {
+            printTotals(totalEffects);
+        }
     }
+
+    private static void printTotals(EnumMap<LinkEffectName, Double> effects) {
+        System.out.println("TOTALS");
+        for (LinkEffectName name : LinkEffectName.values()) {
+            if (effects.get(name) != 0) System.out.println(name + ": " + effects.get(name));
+        }
+    }
+
 
     private static double weightedScore(EnumMap<LinkEffectName, Double> totalEffects) {
         double score = 0;
@@ -70,7 +84,7 @@ public class ScoreModules {
         }
         return score;
     }
-    private static EnumMap<LinkEffectName, Double> combine(Module[] m) {
+    private static EnumMap<LinkEffectName, Double> combineNew(Module[] m) {
         EnumMap<LinkEffectName, Double> total = new EnumMap<>(LinkEffectName.class);
         for (LinkEffectName name : LinkEffectName.values()) {
             total.put(name, 0.0);

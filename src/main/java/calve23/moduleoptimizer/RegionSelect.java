@@ -19,7 +19,6 @@ public class RegionSelect extends JWindow implements NativeKeyListener {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.getButton() != MouseEvent.BUTTON1) return;
-                System.out.println("Drag a box on the screen...");
                 startPoint = e.getPoint();
                 endPoint = startPoint;
                 repaint();
@@ -30,6 +29,7 @@ public class RegionSelect extends JWindow implements NativeKeyListener {
                 endPoint = e.getPoint();
                 region = makeRectangle(startPoint, endPoint);
                 Stored.REGION.set(region);//saving the region with atomic reference
+
                 dispose();
             }
         });
@@ -46,7 +46,12 @@ public class RegionSelect extends JWindow implements NativeKeyListener {
         int y = Math.min(startPoint.y, endPoint.y);
         int w = Math.abs(endPoint.x - startPoint.x);
         int h = Math.abs(endPoint.y - startPoint.y);
-        return new Rectangle(x, y, w, h);
+        int padding = 50;
+
+        int newY = Math.max(0, y - padding);
+        int newH = h + (y - newY) + padding;
+
+        return new Rectangle(x, newY, w, newH);
     }
     @Override
     public void paint(Graphics g) {
