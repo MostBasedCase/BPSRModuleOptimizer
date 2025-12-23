@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class OCRTesting {
+public class OCR {
 
     private static final Tesseract tesseract = create();
 
@@ -19,15 +19,7 @@ public class OCRTesting {
                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz+0123456789& ");
         return t;
     }
-    public static void showImage(BufferedImage img, String title) {
-        JFrame frame = new JFrame(title);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.getContentPane().add(new JLabel(new ImageIcon(img)));
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    }
-    public static LinkEffect beginOCR(BufferedImage image) throws TesseractException {
+    public static LinkEffect begin(BufferedImage image) throws TesseractException {
         LinkEffect e = getLinkEffectValues(image);
         if (e != null) return e;
 

@@ -2,6 +2,8 @@ package calve23.moduleoptimizer;
 
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Module {
 
@@ -21,7 +23,7 @@ public class Module {
         StringBuilder sb = new StringBuilder();
         for (LinkEffectName n : effects.keySet()) {
             String name = n.toString();
-            sb.append(name).append(" +").append(effects.get(n)).append(" | ");
+            sb.append(name).append("+").append(effects.get(n)).append(" | ");
         }
         sb.delete(sb.length() - 2, sb.length());
         return sb.toString();
@@ -29,5 +31,7 @@ public class Module {
     public EnumMap<LinkEffectName, Integer> getEffects() {
         return new EnumMap<>(effects);
     }
+
+
 
 }

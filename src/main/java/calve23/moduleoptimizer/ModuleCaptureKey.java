@@ -67,12 +67,12 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         switch (action) {
         case CREATE_REGION -> createRegion();
         case CAPTURE -> captureMod();
-        case SAVE -> saveMod();
+        //case SAVE -> saveMod();
         case LOAD ->  ModuleInventory.load();
         case SCORE -> score();
         case EXIT -> exitProgram();
         case SET_PRIORITY -> System.out.println("Set priority coming soon");
-        case UNDO_SAVE -> undoSave();
+        //case UNDO_SAVE -> undoSave();
         case PAUSE -> pause();
         case GOLD_2_CAPTURE -> updateModuleType(ModuleType.A);
         case GOLD_1_CAPTURE -> updateModuleType(ModuleType.B);
@@ -103,7 +103,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
     private void saveMod() {
         updateState(State.READY_TO_CAPTURE);
         ModuleInventory.add(currentModule);
-        System.out.println("Mod Saved | Backspace to undo");
+        System.out.println("Mod Saved \n");
         canUndo = true;
     }
     private boolean canNotDo(Action action) {
@@ -163,14 +163,13 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
 
     private void captureMod() throws TesseractException, AWTException {
         updateState(State.CAPTURING);
-        System.out.println("Capturing: " + moduleType.getName());
         List<LinkEffect> effects = new ArrayList<>();
         List<Rectangle> rectangles = RegionPersistence.REGION_MAP.get(moduleType);
         LinkEffect effect;
         for (int i = 0; i < moduleType.requiredRegions(); i++) {
             Robot robot = new Robot();
             BufferedImage capture = robot.createScreenCapture(rectangles.get(i));
-            effect = OCRTesting.beginOCR(capture);
+            effect = OCR.begin(capture);
             effects.add(effect);
         }
         try {
@@ -182,7 +181,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         }
         updateState(State.READY_TO_SAVE);
         System.out.println(currentModule.toString());
-        System.out.println("To save press SPACE. Otherwise capture another mod with right-click");
+        saveMod();
     }
 
 
