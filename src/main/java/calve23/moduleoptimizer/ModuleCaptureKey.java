@@ -5,7 +5,6 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseListener;
-import com.sun.jna.platform.win32.Kernel32;
 import net.sourceforge.tess4j.TesseractException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -235,14 +234,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
         RegionPersistence.save(map);
     }
 
-    private static void pauseIfConsolePresent() {
-        try {
-            if (Kernel32.INSTANCE.GetConsoleWindow() != null) {
-                System.out.println("\nPress Enter to exit...");
-                System.in.read();
-            }
-        } catch (Exception ignored) {}
-    }
+
     public static void main(String[] args) {
         ConsoleOn.top();
         try {
@@ -257,6 +249,7 @@ public class ModuleCaptureKey implements NativeKeyListener, NativeMouseListener 
             createRegionPresets();
         }
         updateState(State.READY_TO_CAPTURE);
-        pauseIfConsolePresent();
     }
+
+
 }
