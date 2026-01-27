@@ -9,6 +9,10 @@ A desktop tool for Blue Protocol that:
 - Scores all possible 4 module combinations based on desired outcome
 - Outputs users' 4 best modules
 
+##DEMO
+[DEMO](https://github.com/user-attachments/assets/2d567c5b-61f1-42e9-b23d-a8dc1fde9e02)
+
+
 ## ALPHA TEASE
 - You can download it [here](https://drive.google.com/file/d/18etNtpdSxfnQVdExS0mxkTGgGvk1jcKU)
  run it on the command line for now if you want!
